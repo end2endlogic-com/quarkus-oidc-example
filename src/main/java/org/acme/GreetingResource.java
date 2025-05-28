@@ -21,7 +21,7 @@ public class GreetingResource {
     @Produces(MediaType.TEXT_PLAIN)
     @Authenticated
     public String authenticated() {
-        return "Hello, ";
+        return "Hello, from authenticated ";
     }
 
     @Path("/user")

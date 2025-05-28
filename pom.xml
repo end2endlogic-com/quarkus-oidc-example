@@ -11,13 +11,11 @@
 
     <properties>
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
-        <maven.compiler.release>21</maven.compiler.release>
+        <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding
-        >UTF-8</project.reporting.outputEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-        <quarkus.platform.group-id
-        >io.quarkus.platform</quarkus.platform.group-id>
+        <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
         <quarkus.platform.version>3.17.5</quarkus.platform.version>
         <skipITs>true</skipITs>
         <surefire-plugin.version>3.5.0</surefire-plugin.version>
@@ -79,6 +77,86 @@
                             <goal>generate-code-tests</goal>
                             <goal>native-image-agent</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>terraform-init</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>initialize</phase>
+                        <configuration>
+                            <executable>terraform</executable>
+                            <arguments>
+                                <argument>init</argument>
+                            </arguments>
+                            <workingDirectory>${project.basedir}/terraform</workingDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>terraform-apply</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <executable>terraform</executable>
+                            <arguments>
+                                <argument>apply</argument>
+                                <argument>-auto-approve</argument>
+                            </arguments>
+                            <workingDirectory>${project.basedir}/terraform</workingDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>terraform-output-json</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <executable>terraform</executable>
+                            <arguments>
+                                <argument>output</argument>
+                                <argument>-json</argument>
+                            </arguments>
+                            <workingDirectory>${project.basedir}/terraform</workingDirectory>
+                            <outputFile>${project.basedir}/terraform/terraform-output.json</outputFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>update-env-file</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <executable>python3</executable>
+                            <arguments>
+                                <argument>${project.basedir}/src/main/python/update_env.py</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>terraform-destroy</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>clean</phase>
+                        <configuration>
+                            <executable>terraform</executable>
+                            <arguments>
+                                <argument>destroy</argument>
+                                <argument>-auto-approve</argument>
+                            </arguments>
+                            <workingDirectory>${project.basedir}/terraform</workingDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
