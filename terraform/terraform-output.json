@@ -1,0 +1,12 @@
+{
+  "app_client_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "73o5eb6vdrtna8pl50n0dpakce"
+  },
+  "user_pool_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "us-east-1_QSLIgbDYu"
+  }
+}
